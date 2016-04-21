@@ -88,6 +88,11 @@ func (r *Reporter) serviceTopology() (report.Topology, []Service, error) {
 			WithTableTemplates(ServiceTableTemplates)
 		services = []Service{}
 	)
+	result.Controls.AddControl(report.Control{
+		ID:    DeleteService,
+		Human: "Delete",
+		Icon:  "fa-trash-o",
+	})
 	err := r.client.WalkServices(func(s Service) error {
 		result = result.AddNode(s.GetNode())
 		services = append(services, s)
@@ -129,6 +134,11 @@ func (r *Reporter) podTopology(services []Service) (report.Topology, report.Topo
 		ID:    GetLogs,
 		Human: "Get logs",
 		Icon:  "fa-desktop",
+	})
+	pods.Controls.AddControl(report.Control{
+		ID:    DeletePod,
+		Human: "Delete",
+		Icon:  "fa-trash-o",
 	})
 	for _, service := range services {
 		selectors[service.ID()] = service.Selector()

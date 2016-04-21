@@ -61,5 +61,7 @@ func (s *service) GetNode() report.Node {
 		ServiceCreated: s.ObjectMeta.CreationTimestamp.Format(time.RFC822),
 		Namespace:      s.Namespace(),
 		ServiceIP:      s.Spec.ClusterIP,
-	}).AddTable(ServiceLabelPrefix, s.Labels)
+	}).
+		AddTable(ServiceLabelPrefix, s.Labels).
+		WithControls(DeleteService)
 }

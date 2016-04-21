@@ -26,7 +26,10 @@ type Client interface {
 	WalkPods(f func(Pod) error) error
 	WalkServices(f func(Service) error) error
 	WalkNodes(f func(*api.Node) error) error
+
 	GetLogs(namespaceID, podID string) (io.ReadCloser, error)
+	DeletePod(namespaceID, podID string) error
+	DeleteService(namespaceID, serviceID string) error
 }
 
 type client struct {
@@ -150,6 +153,14 @@ func (c *client) GetLogs(namespaceID, podID string) (io.ReadCloser, error) {
 		Param("previous", strconv.FormatBool(false)).
 		Param("timestamps", strconv.FormatBool(true)).
 		Stream()
+}
+
+func (c *client) DeletePod(namespaceID, podID string) error {
+	return nil
+}
+
+func (c *client) DeleteService(namespaceID, serviceID string) error {
+	return nil
 }
 
 func (c *client) Stop() {
