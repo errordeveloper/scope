@@ -7,29 +7,28 @@ import (
 	"github.com/weaveworks/scope/render/expected"
 	"github.com/weaveworks/scope/test"
 	"github.com/weaveworks/scope/test/fixture"
-	"github.com/weaveworks/scope/test/reflect"
 )
 
 func TestEndpointRenderer(t *testing.T) {
-	have := Prune(render.EndpointRenderer.Render(fixture.Report))
-	want := Prune(expected.RenderedEndpoints)
-	if !reflect.DeepEqual(want, have) {
+	have := render.EndpointRenderer.Render(fixture.Report)
+	want := expected.RenderedEndpoints
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }
 
 func TestProcessRenderer(t *testing.T) {
-	have := Prune(render.ProcessRenderer.Render(fixture.Report))
-	want := Prune(expected.RenderedProcesses)
-	if !reflect.DeepEqual(want, have) {
+	have := render.ProcessRenderer.Render(fixture.Report)
+	want := expected.RenderedProcesses
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }
 
 func TestProcessNameRenderer(t *testing.T) {
-	have := Prune(render.ProcessNameRenderer.Render(fixture.Report))
-	want := Prune(expected.RenderedProcessNames)
-	if !reflect.DeepEqual(want, have) {
+	have := render.ProcessNameRenderer.Render(fixture.Report)
+	want := expected.RenderedProcessNames
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }

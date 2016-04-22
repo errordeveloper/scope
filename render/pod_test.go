@@ -9,13 +9,12 @@ import (
 	"github.com/weaveworks/scope/render/expected"
 	"github.com/weaveworks/scope/test"
 	"github.com/weaveworks/scope/test/fixture"
-	"github.com/weaveworks/scope/test/reflect"
 )
 
 func TestPodRenderer(t *testing.T) {
-	have := Prune(render.PodRenderer(render.FilterNoop).Render(fixture.Report))
-	want := Prune(expected.RenderedPods)
-	if !reflect.DeepEqual(want, have) {
+	have := render.PodRenderer(render.FilterNoop).Render(fixture.Report)
+	want := expected.RenderedPods
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }
@@ -32,19 +31,19 @@ func TestPodFilterRenderer(t *testing.T) {
 	input.Container.Nodes[fixture.ClientContainerNodeID] = input.Container.Nodes[fixture.ClientContainerNodeID].WithLatests(map[string]string{
 		docker.LabelPrefix + "io.kubernetes.pod.name": "kube-system/foo",
 	})
-	have := Prune(render.PodRenderer(render.FilterSystem).Render(input))
-	want := Prune(expected.RenderedPods.Copy())
+	have := render.PodRenderer(render.FilterSystem).Render(input)
+	want := expected.RenderedPods.Copy()
 	delete(want, fixture.ClientPodNodeID)
 	delete(want, fixture.ClientContainerNodeID)
-	if !reflect.DeepEqual(want, have) {
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }
 
 func TestPodServiceRenderer(t *testing.T) {
-	have := Prune(render.PodServiceRenderer(render.FilterNoop).Render(fixture.Report))
-	want := Prune(expected.RenderedPodServices)
-	if !reflect.DeepEqual(want, have) {
+	have := render.PodServiceRenderer(render.FilterNoop).Render(fixture.Report)
+	want := expected.RenderedPodServices
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }

@@ -47,9 +47,9 @@ func testMap(t *testing.T, f render.MapFunc, input testcase) {
 }
 
 func TestContainerRenderer(t *testing.T) {
-	have := Prune(render.ContainerRenderer.Render(fixture.Report))
-	want := Prune(expected.RenderedContainers)
-	if !reflect.DeepEqual(want, have) {
+	have := render.ContainerRenderer.Render(fixture.Report)
+	want := expected.RenderedContainers
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }
@@ -61,10 +61,10 @@ func TestContainerFilterRenderer(t *testing.T) {
 	input.Container.Nodes[fixture.ClientContainerNodeID] = input.Container.Nodes[fixture.ClientContainerNodeID].WithLatests(map[string]string{
 		docker.LabelPrefix + "works.weave.role": "system",
 	})
-	have := Prune(render.FilterSystem(render.ContainerRenderer).Render(input))
-	want := Prune(expected.RenderedContainers.Copy())
+	have := render.FilterSystem(render.ContainerRenderer).Render(input)
+	want := expected.RenderedContainers.Copy()
 	delete(want, fixture.ClientContainerNodeID)
-	if !reflect.DeepEqual(want, have) {
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }
@@ -92,9 +92,9 @@ func TestContainerWithHostIPsRenderer(t *testing.T) {
 }
 
 func TestContainerImageRenderer(t *testing.T) {
-	have := Prune(render.ContainerImageRenderer(render.FilterNoop).Render(fixture.Report))
-	want := Prune(expected.RenderedContainerImages)
-	if !reflect.DeepEqual(want, have) {
+	have := render.ContainerImageRenderer(render.FilterNoop).Render(fixture.Report)
+	want := expected.RenderedContainerImages
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }
@@ -119,12 +119,12 @@ func TestContainerImageFilterRenderer(t *testing.T) {
 			Add("host", report.MakeStringSet(fixture.ClientHostNodeID)),
 		).WithTopology(report.ContainerImage))
 
-	have := Prune(render.ContainerImageRenderer(render.FilterSystem).Render(input))
-	want := Prune(expected.RenderedContainerImages.Copy())
+	have := render.ContainerImageRenderer(render.FilterSystem).Render(input)
+	want := expected.RenderedContainerImages.Copy()
 	// Test works by virtue of the RenderedContainerImage only having a container
 	// counter == 1
 
-	if !reflect.DeepEqual(want, have) {
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }

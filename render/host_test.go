@@ -7,13 +7,12 @@ import (
 	"github.com/weaveworks/scope/render/expected"
 	"github.com/weaveworks/scope/test"
 	"github.com/weaveworks/scope/test/fixture"
-	"github.com/weaveworks/scope/test/reflect"
 )
 
 func TestHostRenderer(t *testing.T) {
-	have := Prune(render.HostRenderer.Render(fixture.Report))
-	want := Prune(expected.RenderedHosts)
-	if !reflect.DeepEqual(want, have) {
+	have := render.HostRenderer.Render(fixture.Report)
+	want := expected.RenderedHosts
+	if !RoughlyEqual(want, have) {
 		t.Error(test.Diff(want, have))
 	}
 }

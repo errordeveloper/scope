@@ -154,8 +154,8 @@ func (n Node) WithParents(parents Sets) Node {
 	return result
 }
 
-// PruneParents returns a fresh copy of n, without any parents.
-func (n Node) PruneParents() Node {
+// WithoutParents returns a fresh copy of n, without any parents.
+func (n Node) WithoutParents() Node {
 	result := n.Copy()
 	result.Parents = EmptySets
 	return result

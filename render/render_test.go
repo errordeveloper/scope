@@ -1,12 +1,12 @@
 package render_test
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/weaveworks/scope/render"
 	"github.com/weaveworks/scope/report"
 	"github.com/weaveworks/scope/test"
+	"github.com/weaveworks/scope/test/reflect"
 )
 
 type mockRenderer struct {
@@ -16,23 +16,31 @@ type mockRenderer struct {
 func (m mockRenderer) Render(rpt report.Report) report.Nodes { return m.Nodes }
 func (m mockRenderer) Stats(rpt report.Report) render.Stats  { return render.Stats{} }
 
-// Prune returns a copy of the Nodes with all information not strictly
+// RoughlyEqual compares the adjacencies and children of a sets of nodes,
+// excluding their specific attributes. Useful when we want to check the rough
+// shape of a set of nodes, but are not concerned with their specific
+// properties.
+func RoughlyEqual(a, b report.Nodes) bool {
+	return reflect.DeepEqual(prune(a), prune(b))
+}
+
+// prune returns a copy of the Nodes with all information not strictly
 // necessary for rendering nodes and edges in the UI cut away.
-func Prune(nodes report.Nodes) report.Nodes {
+func prune(nodes report.Nodes) report.Nodes {
 	result := report.Nodes{}
 	for id, node := range nodes {
-		result[id] = PruneNode(node)
+		result[id] = pruneNode(node)
 	}
 	return result
 }
 
-// PruneNode returns a copy of the Node with all information not strictly
+// pruneNode returns a copy of the Node with all information not strictly
 // necessary for rendering nodes and edges stripped away. Specifically, that
 // means cutting out parts of the Node.
-func PruneNode(node report.Node) report.Node {
+func pruneNode(node report.Node) report.Node {
 	prunedChildren := report.MakeNodeSet()
 	node.Children.ForEach(func(child report.Node) {
-		prunedChildren = prunedChildren.Add(PruneNode(child))
+		prunedChildren = prunedChildren.Add(pruneNode(child))
 	})
 	return report.MakeNode(
 		node.ID).

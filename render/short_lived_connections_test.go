@@ -73,7 +73,7 @@ var (
 )
 
 func TestShortLivedInternetNodeConnections(t *testing.T) {
-	have := Prune(render.ContainerWithImageNameRenderer.Render(rpt))
+	have := render.ContainerWithImageNameRenderer.Render(rpt)
 
 	// Conntracked-only connections from the internet should be assigned to the internet pseudonode
 	internet, ok := have[render.IncomingInternetID]
